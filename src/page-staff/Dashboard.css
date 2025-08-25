@@ -1,0 +1,203 @@
+/* src/page-staff/Dashboard.css */
+
+/* --- BỐ CỤC CHUNG CHO TRANG DASHBOARD --- */
+.dashboard-page-container {
+    width: 100%;
+    /* THÊM CÁC DÒNG NÀY */
+    display: flex;
+    flex-direction: column;
+    gap: 2rem; /* Tạo khoảng cách 32px giữa các khối con */
+}
+
+/* --- LƯỚI THỐNG KÊ (HÀNG TRÊN) --- */
+/* THÊM MỚI: Định dạng cho thẻ Link bọc ngoài card */
+.stat-card-link {
+    text-decoration: none; /* Bỏ gạch chân */
+    color: inherit;        /* Giữ màu chữ gốc */
+    display: block;        /* Giúp link chiếm trọn không gian của thẻ */
+    height: 100%;          /* Đảm bảo link cao bằng thẻ */
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-card {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    height: 100%; /* CẬP NHẬT: Đảm bảo thẻ luôn lấp đầy thẻ Link */
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.stat-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #6b7280;
+    margin: 0;
+}
+
+.stat-count {
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-top: 0.5rem;
+    color: #1f2937;
+}
+
+.stat-icon-wrapper {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-icon-wrapper svg {
+    font-size: 1.5rem;
+}
+
+/* Màu sắc cho các icon thống kê */
+.icon-blue { background-color: #dbeafe; color: #2563eb; }
+.icon-green { background-color: #d1fae5; color: #059669; }
+.icon-yellow { background-color: #fef3c7; color: #d97706; }
+.icon-red { background-color: #fee2e2; color: #dc2626; }
+
+
+/* --- LƯỚI NỘI DUNG (HÀNG DƯỚI) --- */
+.dashboard-content-grid {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: 2fr 1fr; 
+    gap: 1.5rem;
+}
+
+/* Style chung cho các widget card */
+.widget-card {
+    background-color: white;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.06);
+}
+
+.widget-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #1f2937;
+}
+
+
+/* --- WIDGET THÔNG BÁO --- */
+.announcement-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.announcement-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.announcement-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.announcement-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: #1f2937;
+}
+
+.announcement-title {
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 0.25rem 0;
+}
+
+.announcement-description {
+    font-size: 0.875rem;
+    color: #4b5563;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.announcement-time {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin-top: 0.5rem;
+    display: inline-block;
+}
+
+
+/* --- WIDGET TÀI LIỆU --- */
+.document-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.document-table th {
+    text-align: left;
+    color: #6b7280;
+    font-weight: 500;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.document-table td {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    color: #374151;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.document-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.document-name-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 500;
+}
+
+.document-name-cell svg {
+    font-size: 1.25rem;
+}
+
+.document-link {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+}
+
+.document-link:hover {
+    color: #2563eb;
+    text-decoration: underline;
+}
