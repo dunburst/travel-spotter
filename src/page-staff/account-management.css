@@ -444,16 +444,12 @@
     background-color: #f9fafb;
 }
 
-
-
 .detail-item strong {
     display: block;
     color: #111827;
     margin-bottom: 0.25rem;
     font-weight: 500;
 }
-
-
 
 .text-link {
     color: #2563eb;
@@ -522,14 +518,15 @@
 .text-link:hover {
     text-decoration: underline;
 }
+
 /* Lớp bao ngoài cùng để căn giữa và tạo nền xám */
 .page-container {
     padding: 2rem;
     background-color: #f8f9fa; /* Màu nền xám nhạt */
 }
 
-/* Card chính màu trắng */
-.profile-card {
+/* Card chính màu trắng - ĐỔI TÊN */
+.account-detail-card {
     background-color: #fff;
     border-radius: 16px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
@@ -538,8 +535,8 @@
     margin: 0 auto; /* Tự động căn giữa card */
 }
 
-/* Header ngang với avatar bên trái, thông tin bên phải */
-.profile-header {
+/* Header ngang với avatar bên trái, thông tin bên phải - ĐỔI TÊN */
+.account-detail-header {
     display: flex;
     align-items: center;
     gap: 1.5rem;
@@ -547,18 +544,18 @@
     border-bottom: 1px solid #e9ecef;
 }
 
-.profile-avatar {
+.account-detail-avatar {
     width: 72px;
     height: 72px;
     border-radius: 50%;
     object-fit: cover;
 }
 
-.profile-info {
+.account-detail-info {
     text-align: left;
 }
 
-.profile-name {
+.account-detail-name {
     font-size: 1.5rem;
     font-weight: 600;
     color: #212529;
@@ -573,21 +570,21 @@
     font-size: 1.2rem;
 }
 
-.profile-email {
+.account-detail-email {
     font-size: 1rem;
     color: #6c757d;
     margin-top: 0.25rem;
 }
 
-/* Body 2 cột sử dụng Grid */
-.profile-body {
+/* Body 2 cột sử dụng Grid - ĐỔI TÊN */
+.account-detail-body {
     display: grid;
     /* Mặc định là 1 cột trên màn hình nhỏ */
-    grid-template-columns: 1fr; 
+    grid-template-columns: 1fr;
 }
 /* Khi màn hình đủ lớn (>= 768px), chuyển sang 2 cột */
 @media (min-width: 768px) {
-    .profile-body {
+    .account-detail-body {
         grid-template-columns: 1fr 1fr;
     }
     /* Thêm đường kẻ dọc giữa 2 cột */

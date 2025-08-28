@@ -1,21 +1,20 @@
-// src/page-staff/LocationDetailPage.jsx
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'; // <-- ĐÃ SỬA LỖI TẠI ĐÂY
 import { useParams, useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import axios from 'axios';
 import { 
     FaMapMarkerAlt, FaClock, FaMoneyBillWave, FaGlobe, FaPhone, 
-    FaUser, FaTag, FaCalendarAlt, FaExternalLinkAlt, FaCheckCircle, FaTimesCircle 
+    FaUser, FaTag, FaCalendarAlt, FaExternalLinkAlt, FaCheckCircle, 
+    FaTimesCircle, FaPlayCircle 
 } from 'react-icons/fa';
 import { getPendingLocationDetail, approveLocation, rejectLocation } from '../services/api';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
-import './LocationDetailPage.css'; // Đã di chuyển lên đây
+import './LocationDetailPage.css';
 
 // --- SỬA LỖI ICON ---
-// Đoạn code này phải nằm sau tất cả các dòng import
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
     iconUrl: markerIcon,
@@ -50,8 +49,23 @@ const InfoRow = ({ icon, label, value, isLink = false }) => {
     );
 };
 
+// --- [MỚI] Helper function để xác định loại media ---
+const getMediaType = (url) => {
+    if (!url || typeof url !== 'string') return 'image';
+    const videoExtensions = ['.mp4', '.webm', '.mov', '.ogg'];
+    try {
+        const path = new URL(url).pathname.toLowerCase();
+        if (videoExtensions.some(ext => path.endsWith(ext))) {
+            return 'video';
+        }
+    } catch (e) {
+        // Bỏ qua nếu URL không hợp lệ, mặc định là ảnh
+    }
+    return 'image';
+};
 
-// --- Main Component (Không thay đổi logic) ---
+
+// --- Main Component ---
 export default function LocationDetailPage() {
     const { locationId } = useParams();
     const navigate = useNavigate();
@@ -59,7 +73,7 @@ export default function LocationDetailPage() {
     const [details, setDetails] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedMedia, setSelectedMedia] = useState(null); // { url: string, type: 'image' | 'video' }
     const [coordinates, setCoordinates] = useState(null);
     const [mapLoading, setMapLoading] = useState(true);
     const [mapError, setMapError] = useState(null);
@@ -130,7 +144,10 @@ export default function LocationDetailPage() {
     if (error) return <div className="error-state">Lỗi: {error}</div>;
     if (!details) return <div className="empty-state">Không tìm thấy thông tin.</div>;
     
-    const coverImage = details.images && details.images.length > 0 ? details.images[0] : '/images/default-location-image.png';
+    const mediaItems = details.images || [];
+    const coverImage = mediaItems.length > 0 && getMediaType(mediaItems[0]) === 'image' 
+        ? mediaItems[0] 
+        : '/images/default-location-image.png';
 
     return (
         <div className="location-detail-page">
@@ -166,15 +183,31 @@ export default function LocationDetailPage() {
                             </MapContainer>
                         )}
                     </InfoCard>
-
-                    {details.images && details.images.length > 0 && (
-                        <InfoCard title="Thư viện hình ảnh">
+                    
+                    {mediaItems.length > 0 && (
+                        <InfoCard title="Thư viện Hình ảnh & Video">
                             <div className="image-gallery">
-                                {details.images.map((img, index) => (
-                                    <div key={index} className="gallery-item" onClick={() => setSelectedImage(img)}>
-                                        <img src={img} alt={`Hình ảnh ${index + 1}`} />
-                                    </div>
-                                ))}
+                                {mediaItems.map((mediaUrl, index) => {
+                                    const mediaType = getMediaType(mediaUrl);
+                                    return (
+                                        <div 
+                                            key={index} 
+                                            className="gallery-item" 
+                                            onClick={() => setSelectedMedia({ url: mediaUrl, type: mediaType })}
+                                        >
+                                            {mediaType === 'video' ? (
+                                                <div className="gallery-video-wrapper">
+                                                    <video src={mediaUrl} muted playsInline preload="metadata" />
+                                                    <div className="play-icon-overlay">
+                                                        <FaPlayCircle size={40} />
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <img src={mediaUrl} alt={`Media ${index + 1}`} />
+                                            )}
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </InfoCard>
                     )}
@@ -197,15 +230,21 @@ export default function LocationDetailPage() {
                                 <span className="info-row__label">Trạng thái</span>
                                 <span className="status-badge status-pending">Chờ duyệt</span>
                             </div>
-                        </div>
+                         </div>
                     </InfoCard>
                 </div>
             </div>
 
-            {selectedImage && (
-                <div className="image-modal-overlay" onClick={() => setSelectedImage(null)}>
-                    <img src={selectedImage} alt="Xem ảnh lớn" className="image-modal-content" />
-                    <button className="image-modal-close">×</button>
+            {selectedMedia && (
+                <div className="media-modal-overlay" onClick={() => setSelectedMedia(null)}>
+                    <div className="media-modal-content-wrapper" onClick={(e) => e.stopPropagation()}>
+                        {selectedMedia.type === 'image' ? (
+                             <img src={selectedMedia.url} alt="Xem ảnh lớn" className="media-modal-content" />
+                        ) : (
+                            <video src={selectedMedia.url} controls autoPlay className="media-modal-content" />
+                        )}
+                    </div>
+                    <button className="media-modal-close" onClick={() => setSelectedMedia(null)}>×</button>
                 </div>
             )}
         </div>

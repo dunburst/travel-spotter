@@ -77,30 +77,28 @@ export default function AccountDetailPage() {
     if (loading) return <div className="loading-state">Đang tải chi tiết...</div>;
     if (error) return <div className="error-state">Lỗi: {error}</div>;
     if (!details) return <div className="empty-state">Không tìm thấy thông tin.</div>;
-    
-    const defaultAvatar = "/images/image.png"; 
+
+    const defaultAvatar = "/images/image.png";
 
     return (
         <div className="page-container">
-            <div className="profile-card">
-                {/* --- Profile Header (Ngang) --- */}
-                <header className="profile-header">
+            <div className="account-detail-card">
+                <header className="account-detail-header">
                     <img
                         src={details.avatarUrl || defaultAvatar}
                         alt="Avatar"
-                        className="profile-avatar"
+                        className="account-detail-avatar"
                     />
-                    <div className="profile-info">
-                        <h1 className="profile-name">
+                    <div className="account-detail-info">
+                        <h1 className="account-detail-name">
                             {details.companyName || details.username}
                             <FaCheckCircle className="verified-icon" />
                         </h1>
-                        <p className="profile-email">{details.email}</p>
+                        <p className="account-detail-email">{details.email}</p>
                     </div>
                 </header>
 
-                {/* --- Profile Body (2 Cột) --- */}
-                <main className="profile-body">
+                <main className="account-detail-body">
                     <div className="info-column">
                         <h3 className="column-title">Chi tiết tài khoản</h3>
                         <DetailRow label="Tên tài khoản" value={details.username} />
@@ -127,9 +125,8 @@ export default function AccountDetailPage() {
                         } placeholder="Chưa cung cấp"/>
                     </div>
                 </main>
-                
-                 {/* --- Actions Footer (Bên TRONG Card) --- */}
-                <footer className="card-footer">
+
+                 <footer className="card-footer">
                     <button onClick={handleReject} className="action-button reject-button">Từ chối</button>
                     <button onClick={handleApprove} className="action-button approve-button">Duyệt tài khoản</button>
                 </footer>

@@ -1,68 +1,112 @@
 // src/services/api.js
-
 import axios from 'axios';
 
 // --- CẤU HÌNH CHUNG ---
-// Thay đổi IP và port nếu backend của bạn chạy ở địa chỉ khác
-const API_BASE_URL = 'http://26.118.131.110:8080/api';
+const API_BASE_URL = 'http://26.118.131.110:8080';
 
-// Tạo một instance của axios để có thể dễ dàng thêm token sau này
 const api = axios.create({
-    baseURL: API_BASE_URL,
-    headers: { 'Content-Type': 'application/json' }
+    baseURL: `${API_BASE_URL}/api`,
+    headers: { 'Content-Type': 'application/json' }
 });
 
-// --- API CHO CONTACT INFO ---
-/**
- * Gửi thông tin liên hệ mới lên server.
- * @param {object} contactData - Dữ liệu form liên hệ.
- * @param {string} contactData.fullName - Tên đầy đủ.
- * @param {string} contactData.email - Email.
- * @param {string} contactData.phoneNumber - Số điện thoại.
- * @param {string} contactData.note - Lời nhắn.
- * @returns {Promise<axios.AxiosResponse<any>>}
- */
+// Thêm interceptor để tự động gắn token vào mỗi request
+api.interceptors.request.use(config => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user && user.token) {
+        config.headers['Authorization'] = `Bearer ${user.token}`;
+    }
+    return config;
+}, error => {
+    return Promise.reject(error);
+});
+
+
+// --- API XÁC THỰC ---
+export const login = async (username, password) => {
+  const res = await fetch(`${API_BASE_URL}/auth/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "X-Requested-With": "XMLHttpRequest"
+    },
+    body: JSON.stringify({ username, password })
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || "Đăng nhập thất bại");
+  return data;
+};
+
+// *** ĐÃ THÊM: CÁC HÀM ĐĂNG KÝ ***
+export const registerUser = (userData) => {
+  return axios.post(`${API_BASE_URL}/api/accounts/register/user`, userData);
+};
+
+export const registerCompany = (companyData) => {
+  return axios.post(`${API_BASE_URL}/api/accounts/register/company`, companyData);
+};
+
+
+// --- API LIÊN QUAN ĐẾN USER PROFILE ---
+export const updateUserProfile = (userId, profileData) => {
+    return api.put(`/accounts/user/${userId}`, profileData);
+};
+
+export const getCurrentUser = async () => {
+    const response = await api.get('/accounts/me/user');
+    return response.data;
+};
+
+
+// --- CÁC HÀM API KHÁC ---
 export const createContactInfo = (contactData) => api.post('/contact-info', contactData);
-
 export const getAllContactInfo = () => api.get('/contact-info');
-
-
-
-// --- API CHO ACCOUNTS ---
 export const getAllAccounts = () => api.get('/accounts');
 export const getPendingCompanyAccounts = () => api.get('/accounts/pending');
 export const approveCompanyAccount = (accountId) => api.put(`/accounts/${accountId}/approve`);
 export const rejectCompanyAccount = (accountId) => api.put(`/accounts/${accountId}/reject`);
 export const updateAccountStatus = (accountId, status) => api.put(`/accounts/${accountId}/status`, null, { params: { status } });
 export const getPendingAccountDetail = (accountId) => api.get(`/accounts/pending/${accountId}`);
-
-
-// --- API CHO LOCATIONS ---
 export const getAllLocations = () => api.get('/locations');
+export const getCompanyLocations = () => api.get('/locations/me/company');
 export const getPendingLocations = () => api.get('/locations/pending');
 export const approveLocation = (locationId) => api.put(`/locations/${locationId}/approve`);
 export const rejectLocation = (locationId) => api.put(`/locations/${locationId}/reject`);
 export const deleteLocation = (locationId) => api.delete(`/locations/${locationId}`);
 export const createLocation = (locationData) => api.post('/locations', locationData);
 export const getPendingLocationDetail = (locationId) => api.get(`/locations/pending/${locationId}`);
-
-// --- API CHO REVIEWS ---
 export const getAllReviews = () => api.get('/reviews');
 export const getPendingReviews = () => api.get('/reviews/pending');
 export const approveReview = (reviewId) => api.put(`/reviews/${reviewId}/approve`);
 export const rejectReview = (reviewId) => api.put(`/reviews/${reviewId}/reject`);
 export const deleteReview = (reviewId) => api.delete(`/reviews/${reviewId}`);
-
-// --- API CHO ADVERTISEMENTS (ADS) ---
 export const getAllAds = () => api.get('/ads');
 export const getPendingAds = () => api.get('/ads/pending');
 export const approveAd = (adId) => api.put(`/ads/${adId}/approve`);
 export const rejectAd = (adId) => api.put(`/ads/${adId}/reject`);
 export const deleteAd = (adId) => api.delete(`/ads/${adId}`);
-
-// --- API CHO NOTIFICATIONS ---
+export const createAd = (adData) => api.post('/ads', adData);
 export const getCompanyRegisteredNotifications = () => api.get('/notifications/company-registered');
 export const getUserRegisteredNotifications = () => api.get('/notifications/user-registered');
 export const getAdsCreatedNotifications = () => api.get('/notifications/ads-created');
 export const getLocationsCreatedNotifications = () => api.get('/notifications/locations-created');
 export const getReviewsCreatedNotifications = () => api.get('/notifications/reviews-created');
+export const getAllCategories = () => api.get('/categories');
+export const createLocationWithImages = (locationData, images) => {
+    const formData = new FormData();
+    formData.append('data', JSON.stringify(locationData));
+    images.forEach((image) => {
+        formData.append('image', image);
+    });
+    return api.post('/locations', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+};
+export const createPayment = (amount, adId) => api.get(`/payment/create-payment`, { params: { amount, adId } });
+
+// THÊM MỚI: Hàm gọi API đề xuất từ Node.js Backend
+export const getRecommendations = (data) => {
+    return axios.post('http://26.118.131.110:3001/api/get-recommendations', data);
+};

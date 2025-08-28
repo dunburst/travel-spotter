@@ -137,17 +137,6 @@
     white-space: pre-wrap;
 }
 
-.location-map-image {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    border: 1px solid #e5e7eb;
-    transition: opacity 0.2s ease;
-}
-.location-map-image:hover {
-    opacity: 0.85;
-}
-
 /* --- Info Row (Right column) --- */
 .info-row {
     display: flex;
@@ -217,36 +206,84 @@
     transform: scale(1.1);
 }
 
-/* --- Image Modal --- */
-.image-modal-overlay {
-    position: fixed;
+/* --- BỔ SUNG CHO GALLERY (VIDEO) --- */
+
+/* **[SỬA LỖI TẠI ĐÂY]** Chuyển `position` thành `absolute` để video và wrapper của nó lấp đầy
+  khung `.gallery-item` đã được tạo sẵn theo tỉ lệ 1:1.
+*/
+.gallery-video-wrapper {
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+}
+
+/* Style cho thumbnail video */
+.gallery-item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Đảm bảo video lấp đầy khung */
+}
+
+/* Icon play nằm đè lên video */
+.play-icon-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(255, 255, 255, 0.8);
+    pointer-events: none; /* Cho phép click xuyên qua icon */
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.gallery-item:hover .play-icon-overlay {
+    transform: translate(-50%, -50%) scale(1.1);
+    color: white;
+}
+
+
+/* --- MODAL CHUNG CHO ẢNH & VIDEO --- */
+.media-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background-color: rgba(0, 0, 0, 0.85);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 2000;
+    padding: 20px;
+    box-sizing: border-box;
     animation: fadeIn 0.3s ease;
 }
 
-.image-modal-content {
-    max-width: 90vw;
-    max-height: 90vh;
-    object-fit: contain;
-}
-
-.image-modal-close {
+.media-modal-close {
     position: absolute;
     top: 20px;
     right: 30px;
-    font-size: 2.5rem;
+    font-size: 40px;
     color: white;
     background: none;
     border: none;
     cursor: pointer;
+    line-height: 1;
+}
+
+/* Wrapper để ngăn click vào content đóng modal */
+.media-modal-content-wrapper {
+    position: relative;
+}
+
+/* Style chung cho nội dung trong modal (ảnh và video) */
+.media-modal-content {
+    max-width: 90vw;
+    max-height: 90vh;
+    display: block;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
 @keyframes fadeIn {

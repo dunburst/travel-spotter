@@ -1,0 +1,218 @@
+/* src/page-user/UserDashboard.css */
+.map-body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+.map-layout {
+  display: flex;
+  height: calc(100vh - 120px);
+  overflow: hidden; 
+}
+.map-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.map-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  height: 60px; 
+  flex-shrink: 0;
+}
+.map-header .logo {
+  font-size: 20px;
+  font-weight: bold;
+  color: #3f51b5;
+}
+.map-view {
+  flex-grow: 1;
+  position: relative;
+}
+.map-view #map {
+  width: 100%;
+  height: 100%;
+}
+.map-footer {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 12px;
+  background-color: white;
+  border-top: 1px solid #ccc;
+  height: 60px;
+  flex-shrink: 0;
+}
+.sidebar-btn {
+  background-color: #5c6bc0;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+.map-right {
+  width: 380px;
+  background-color: #f9fafb;
+  padding: 16px;
+  overflow-y: auto;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+.suggestions-header h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+.filter-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.filter-row select {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: white;
+}
+
+/* ================================== */
+/* === GIAO DIỆN MỚI CHO THẺ GỢI Ý (NHỎ GỌN) === */
+/* ================================== */
+.suggestions-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+.suggestion-card-v2 {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    overflow: hidden;
+    display: flex; /* THAY ĐỔI: Bố cục ngang */
+    flex-direction: row; /* THAY ĐỔI */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer; /* Thêm con trỏ để cho biết có thể nhấp */
+}
+.suggestion-card-v2:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+/* --- Phần hình ảnh --- */
+.card-image-container {
+    position: relative;
+    width: 120px; /* THAY ĐỔI: Cố định chiều rộng ảnh */
+    height: 120px; /* THAY ĐỔI: Cố định chiều cao ảnh */
+    flex-shrink: 0; /* Ngăn ảnh bị co lại */
+    background-color: #e2e8f0;
+}
+.card-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.card-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+}
+.card-favorite-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.card-favorite-btn.active {
+    color: #ef4444;
+}
+
+/* --- Phần nội dung text --- */
+.card-content {
+    padding: 12px; /* THAY ĐỔI: Giảm padding */
+    display: flex;
+    flex-direction: column;
+    gap: 4px; /* THAY ĐỔI: Giảm khoảng cách */
+    flex-grow: 1; /* Cho phép phần nội dung chiếm hết không gian còn lại */
+    justify-content: center; /* Căn giữa nội dung theo chiều dọc */
+}
+.card-title {
+    font-size: 16px; /* THAY ĐỔI: Giảm cỡ chữ */
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+    /* Giới hạn 1 dòng cho tên */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.card-rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px; /* THAY ĐỔI: Giảm cỡ chữ */
+    color: #4b5563;
+}
+.star-icon {
+    color: #f59e0b;
+}
+.review-count {
+    color: #6b7280;
+    font-size: 11px;
+}
+.card-address {
+    font-size: 13px; /* THAY ĐỔI: Giảm cỡ chữ */
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.4;
+    /* Giới hạn 2 dòng cho địa chỉ */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+}
+
+/* --- XÓA BỎ PHẦN NÚT HÀNH ĐỘNG --- */
+.card-actions, .card-route-btn, .card-detail-btn {
+    display: none;
+}
+
+/* ================================== */
+/* === CSS CŨ & KHÁC === */
+/* ================================== */
+.user-section { position: relative; display: inline-block; }
+.user-icon { cursor: pointer; font-size: 22px; padding: 5px; }
+.user-menu { position: absolute; right: 0; top: 100%; background: white; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); padding: 10px; min-width: 150px; z-index: 10; }
+.user-menu .profile-btn, .user-menu .logout-btn { display: block; width: 100%; padding: 8px; margin-top: 5px; background: #f0f0f0; border: none; cursor: pointer; text-align: left; border-radius: 4px; }
+.user-menu .profile-btn:hover, .user-menu .logout-btn:hover { background: #e0e0e0; }
+.user-name { font-weight: bold; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px solid #eee; }
+.pagination { display: flex; justify-content: center; align-items: center; margin-top: auto; padding-top: 16px; flex-shrink: 0; }
+.pagination button { margin: 0 4px; padding: 6px 12px; border: 1px solid #ccc; background-color: #fff; cursor: pointer; border-radius: 4px; }
+.pagination button:disabled { cursor: not-allowed; opacity: 0.5; }
+.pagination button.active { background-color: #3f51b5; color: white; border-color: #3f51b5; }

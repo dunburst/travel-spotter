@@ -63,7 +63,7 @@ const getPageTitle = (pathname) => {
 };
 
 // --- Component chính ---
-export default function StaffLayout() {
+export default function StaffLayout({ onLogout }) {
     const [counts, setCounts] = useState({ accounts: 0, locations: 0, reviews: 0, ads: 0, contacts: 0 });
     const [loading, setLoading] = useState(true);
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
@@ -78,18 +78,15 @@ export default function StaffLayout() {
         localStorage.setItem('lastSeenContactCount', counts.contacts.toString());
         setHasNewContacts(false);
     };
-    
-    // **BẮT ĐẦU THAY ĐỔI**
-    // 1. Gộp tất cả logic fetch data vào một hàm useCallback duy nhất
+
     const fetchData = useCallback(async () => {
         setLoading(true);
         try {
-            // Thực hiện tất cả các API call song song để tối ưu tốc độ
             const [
-                accountsRes, 
-                locationsRes, 
-                reviewsRes, 
-                adsRes, 
+                accountsRes,
+                locationsRes,
+                reviewsRes,
+                adsRes,
                 contactsRes,
                 companyNotiRes,
                 userNotiRes,
@@ -109,7 +106,6 @@ export default function StaffLayout() {
                 getReviewsCreatedNotifications(),
             ]);
 
-            // Xử lý dữ liệu counts
             const newCounts = {
                 accounts: accountsRes.data?.length || 0,
                 locations: locationsRes.data?.length || 0,
@@ -118,13 +114,12 @@ export default function StaffLayout() {
                 contacts: contactsRes.data?.length || 0
             };
             setCounts(newCounts);
-            
+
             const lastSeenCount = parseInt(localStorage.getItem('lastSeenContactCount') || '0', 10);
             if (newCounts.contacts > lastSeenCount) {
                 setHasNewContacts(true);
             }
 
-            // Xử lý dữ liệu notifications
             const allNotifications = [
                 ...(companyNotiRes.data.result || []),
                 ...(userNotiRes.data.result || []),
@@ -132,12 +127,12 @@ export default function StaffLayout() {
                 ...(locationsNotiRes.data.result || []),
                 ...(reviewsNotiRes.data.result || [])
             ];
-            
+
             const sevenDaysAgo = subDays(new Date(), 7);
             const recentNotifications = allNotifications
                 .filter(noti => new Date(noti.createdAt) > sevenDaysAgo)
                 .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            
+
             setAllRecentNotifications(recentNotifications);
 
         } catch (error) {
@@ -145,22 +140,18 @@ export default function StaffLayout() {
         } finally {
             setLoading(false);
         }
-    }, []); // Dependency rỗng vì nó không phụ thuộc vào props hay state nào
+    }, []);
 
-    // 2. useEffect này sẽ gọi fetchData một lần duy nhất khi component được mount
     useEffect(() => {
         fetchData();
     }, [fetchData]);
 
-    // 3. Tách hàm toggle panel thông báo ra riêng
     const toggleNotificationPanel = () => {
         setIsNotificationOpen(prev => !prev);
-        // Reset lại chế độ xem khi mở panel
         if (!isNotificationOpen) {
             setShowAllNotifications(false);
         }
     };
-    // **KẾT THÚC THAY ĐỔI**
 
     const displayedNotifications = showAllNotifications
         ? allRecentNotifications
@@ -176,13 +167,17 @@ export default function StaffLayout() {
 
     return (
         <div className="staff-layout">
-            <Sidebar counts={counts} hasNewContacts={hasNewContacts} onViewContacts={handleViewContacts} />
+            <Sidebar
+                counts={counts}
+                hasNewContacts={hasNewContacts}
+                onViewContacts={handleViewContacts}
+                onLogout={onLogout}
+            />
             <div className="main-content">
                 <header className="staff-header">
                      <h1 className="page-title">{pageTitle}</h1>
                      <div className="user-info">
                          <div className="notification-wrapper" ref={notificationRef}>
-                             {/* 4. Cập nhật onClick để gọi hàm toggle mới */}
                              <button className="notification-button" onClick={toggleNotificationPanel}>
                                  <BellIcon className="button-icon" />
                                  {allRecentNotifications.length > 0 && (
@@ -204,9 +199,8 @@ export default function StaffLayout() {
                          <img src="https://placehold.co/40x40/3b82f6/ffffff?text=NV" alt="User Avatar" className="user-avatar" />
                      </div>
                 </header>
-                
+
                 <main className="page-content">
-                    {/* 5. Truyền cả trạng thái loading vào Outlet */}
                     <Outlet context={{ counts, loading, notifications: allRecentNotifications }} />
                 </main>
             </div>

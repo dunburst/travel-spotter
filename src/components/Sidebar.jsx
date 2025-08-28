@@ -1,26 +1,34 @@
 // src/components/Sidebar.jsx
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { 
-    FaTachometerAlt, 
-    FaUsersCog, 
-    FaMapMarkerAlt, 
-    FaStarHalfAlt, 
-    FaAd, 
+import {
+    FaTachometerAlt,
+    FaUsersCog,
+    FaMapMarkerAlt,
+    FaStarHalfAlt,
+    FaAd,
     FaSignOutAlt,
     FaMapMarkedAlt,
     FaAddressBook
 } from 'react-icons/fa';
 import './Sidebar.css';
 
-const Sidebar = ({ counts = {}, hasNewContacts, onViewContacts }) => {
+const Sidebar = ({ counts = {}, hasNewContacts, onViewContacts, onLogout }) => {
+
+    const handleLogoutClick = (e) => {
+        e.preventDefault(); // Ngăn link thêm dấu '#' vào URL
+        if (window.confirm("Bạn có chắc chắn muốn đăng xuất?")) {
+            onLogout();
+        }
+    };
+
     return (
         <aside className="sidebar">
             <div className="sidebar-logo">
                 <FaMapMarkedAlt className="logo-icon" />
                 <span className="logo-text">TravelSuggest</span>
             </div>
-            
+
             <nav className="sidebar-nav">
                 <NavLink to="/staff/dashboard" className="sidebar-link">
                     <FaTachometerAlt className="sidebar-icon" />
@@ -46,11 +54,10 @@ const Sidebar = ({ counts = {}, hasNewContacts, onViewContacts }) => {
                     <span>Kiểm duyệt Quảng cáo</span>
                     {counts.ads > 0 && <span className="badge">{counts.ads}</span>}
                 </NavLink>
-                
+
                 <NavLink to="/staff/contacts" className="sidebar-link" onClick={onViewContacts}>
                     <FaAddressBook className="sidebar-icon" />
                     <span>Hòm thư liên hệ</span>
-                    {/* Cấu trúc HTML mới cho thông báo */}
                     {hasNewContacts && (
                         <span className="notification-indicator-wrapper">
                             <span className="notification-ping"></span>
@@ -61,7 +68,7 @@ const Sidebar = ({ counts = {}, hasNewContacts, onViewContacts }) => {
             </nav>
 
             <div className="sidebar-footer">
-                <a href="#logout" className="sidebar-link">
+                <a href="#" onClick={handleLogoutClick} className="sidebar-link">
                     <FaSignOutAlt className="sidebar-icon" />
                     <span>Đăng xuất</span>
                 </a>
