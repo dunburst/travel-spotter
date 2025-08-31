@@ -201,3 +201,301 @@
     color: #2563eb;
     text-decoration: underline;
 }
+/* CSS Bổ sung cho CompanyDashboard V2 */
+.company-dashboard-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.dashboard-header-v2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.dashboard-header-v2 h1 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+.dashboard-header-v2 p {
+    font-size: 1rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+}
+
+.export-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #ffffff;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.export-button:hover {
+    background-color: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.stats-grid-v2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-card-v2 {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border: 1px solid #e5e7eb;
+}
+
+.stat-icon-v2 {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+}
+.stat-icon-v2.icon-blue { background-color: #3b82f6; }
+.stat-icon-v2.icon-green { background-color: #10b981; }
+.stat-icon-v2.icon-yellow { background-color: #f59e0b; }
+.stat-icon-v2.icon-purple { background-color: #8b5cf6; }
+
+
+.stat-title-v2 {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #6b7280;
+    margin: 0;
+}
+
+.stat-value-v2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0.25rem 0;
+}
+
+.stat-change-v2, .stat-subtitle-v2 {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+.text-green-500 { color: #22c55e; }
+.text-red-500 { color: #ef4444; }
+
+.charts-grid-v2 {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+}
+
+.chart-main {
+    grid-column: span 2;
+}
+
+.chart-side {
+    grid-column: span 1;
+}
+
+@media (max-width: 1024px) {
+    .charts-grid-v2 {
+        grid-template-columns: 1fr;
+    }
+    .chart-main, .chart-side {
+        grid-column: span 1;
+    }
+}
+
+.chart-container {
+    width: 100%;
+    height: 250px;
+}
+
+.chart-label {
+    font-size: 10px;
+    fill: #6b7280;
+}
+
+.chart-grid-line {
+    stroke: #e5e7eb;
+    stroke-dasharray: 2, 2;
+}
+
+.chart-bar {
+    transition: all 0.3s ease;
+}
+
+.chart-bar:hover {
+    opacity: 0.8;
+}
+/* src/page-staff/Dashboard.css */
+
+/* --- BỐ CỤC CHUNG --- */
+.company-dashboard-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.dashboard-header-v2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+.dashboard-header-v2 h1 { font-size: 1.875rem; font-weight: 700; color: #111827; margin: 0; }
+.dashboard-header-v2 p { font-size: 1rem; color: #6b7280; margin-top: 0.25rem; }
+
+.export-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #ffffff;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.export-button:hover { background-color: #f9fafb; border-color: #9ca3af; }
+
+/* --- THẺ THỐNG KÊ --- */
+.stats-grid-v2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-card-v2 {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border: 1px solid #e5e7eb;
+}
+
+.stat-icon-v2 {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+}
+.stat-icon-v2 svg { width: 1.5rem; height: 1.5rem; }
+.stat-icon-v2.icon-blue { background-color: #3b82f6; }
+.stat-icon-v2.icon-green { background-color: #10b981; }
+.stat-icon-v2.icon-yellow { background-color: #f59e0b; }
+.stat-icon-v2.icon-purple { background-color: #8b5cf6; }
+
+.stat-title-v2 { font-size: 0.875rem; font-weight: 500; color: #6b7280; margin: 0; }
+.stat-value-v2 { font-size: 1.5rem; font-weight: 700; color: #111827; margin: 0.25rem 0; }
+.stat-change-v2, .stat-subtitle-v2 { font-size: 0.75rem; color: #6b7280; margin: 0; }
+.text-green-500 { color: #22c55e; }
+.text-red-500 { color: #ef4444; }
+
+
+/* --- BIỂU ĐỒ VÀ BỐ CỤC --- */
+.dashboard-charts-area {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+.dashboard-chart-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+@media (max-width: 1024px) {
+    .dashboard-chart-row {
+        grid-template-columns: 1fr;
+    }
+}
+.widget-card {
+    background-color: white;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid #e5e7eb;
+}
+.widget-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #1f2937;
+}
+.chart-container { width: 100%; height: 250px; }
+.chart-label { font-size: 10px; fill: #6b7280; }
+.chart-grid-line { stroke: #e5e7eb; stroke-dasharray: 2, 2; }
+.chart-bar:hover { opacity: 0.8; }
+
+/* --- ĐÁNH GIÁ TIÊU BIỂU --- */
+.reviews-container-v2 {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    height: 250px;
+    overflow-y: auto;
+    padding-right: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: #d1d5db #f9fafb;
+}
+.reviews-container-v2::-webkit-scrollbar { width: 6px; }
+.reviews-container-v2::-webkit-scrollbar-track { background: #f9fafb; }
+.reviews-container-v2::-webkit-scrollbar-thumb { background-color: #d1d5db; border-radius: 10px; }
+
+.review-item-v2 {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+.review-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+.review-content-v2 { flex-grow: 1; }
+.review-header-v2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
+.review-author-v2 { font-weight: 600; color: #1f2937; }
+.review-time-v2 { font-size: 0.75rem; color: #9ca3af; }
+.star-rating-v2 {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 0.5rem;
+}
+.review-comment-v2 {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #4b5563;
+    margin: 0;
+}

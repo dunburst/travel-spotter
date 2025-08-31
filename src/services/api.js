@@ -37,7 +37,6 @@ export const login = async (username, password) => {
   return data;
 };
 
-// *** ĐÃ THÊM: CÁC HÀM ĐĂNG KÝ ***
 export const registerUser = (userData) => {
   return axios.post(`${API_BASE_URL}/api/accounts/register/user`, userData);
 };
@@ -73,14 +72,15 @@ export const getPendingLocations = () => api.get('/locations/pending');
 export const approveLocation = (locationId) => api.put(`/locations/${locationId}/approve`);
 export const rejectLocation = (locationId) => api.put(`/locations/${locationId}/reject`);
 export const deleteLocation = (locationId) => api.delete(`/locations/${locationId}`);
-export const createLocation = (locationData) => api.post('/locations', locationData);
 export const getPendingLocationDetail = (locationId) => api.get(`/locations/pending/${locationId}`);
+export const getLocationDetail = (locationId) => api.get(`/locations/${locationId}`);
 export const getAllReviews = () => api.get('/reviews');
 export const getPendingReviews = () => api.get('/reviews/pending');
 export const approveReview = (reviewId) => api.put(`/reviews/${reviewId}/approve`);
 export const rejectReview = (reviewId) => api.put(`/reviews/${reviewId}/reject`);
 export const deleteReview = (reviewId) => api.delete(`/reviews/${reviewId}`);
 export const getAllAds = () => api.get('/ads');
+export const getCompanyAds = () => api.get('/ads/me');
 export const getPendingAds = () => api.get('/ads/pending');
 export const approveAd = (adId) => api.put(`/ads/${adId}/approve`);
 export const rejectAd = (adId) => api.put(`/ads/${adId}/reject`);
@@ -92,6 +92,9 @@ export const getAdsCreatedNotifications = () => api.get('/notifications/ads-crea
 export const getLocationsCreatedNotifications = () => api.get('/notifications/locations-created');
 export const getReviewsCreatedNotifications = () => api.get('/notifications/reviews-created');
 export const getAllCategories = () => api.get('/categories');
+export const createPayment = (amount, adId) => api.get(`/payment/create-payment`, { params: { amount, adId } });
+export const getRecommendations = (data) => axios.post('http://26.118.131.110:3001/api/get-recommendations', data);
+
 export const createLocationWithImages = (locationData, images) => {
     const formData = new FormData();
     formData.append('data', JSON.stringify(locationData));
@@ -104,9 +107,22 @@ export const createLocationWithImages = (locationData, images) => {
         },
     });
 };
-export const createPayment = (amount, adId) => api.get(`/payment/create-payment`, { params: { amount, adId } });
 
-// THÊM MỚI: Hàm gọi API đề xuất từ Node.js Backend
-export const getRecommendations = (data) => {
-    return axios.post('http://26.118.131.110:3001/api/get-recommendations', data);
+export const createLocationByStaff = (locationData, images) => {
+    const formData = new FormData();
+    formData.append('data', JSON.stringify(locationData)); 
+    images.forEach((image) => {
+        formData.append('image', image);
+    });
+    return api.post('/locations/staff', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
 };
+
+// --- API CHO QUẢN LÝ NHÂN VIÊN BỞI ADMIN ---
+export const getAllStaffAccounts = () => api.get('/accounts/staff');
+export const createAccount = (accountData) => api.post('/accounts', accountData);
+export const updateAccount = (accountId, accountData) => api.put(`/accounts/${accountId}`, accountData);
+export const deleteAccount = (accountId) => api.delete(`/accounts/${accountId}`);

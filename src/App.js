@@ -4,10 +4,12 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 
 // --- Import Layout và các trang chính ---
 import StaffLayout from './layouts/StaffLayout';
+import CompanyLayout from './layouts/CompanyLayout';
 import Dashboard from './page-staff/Dashboard';
 import AccountManagementPage from './page-staff/account-management';
 import AccountDetailPage from './page-staff/AccountDetailPage';
 import LocationManagementPage from './page-staff/location-management';
+import AddLocationPageStaff from './page-staff/AddLocationPageStaff';
 import LocationDetailPage from './page-staff/LocationDetailPage';
 import ReviewManagementPage from './page-staff/review-management';
 import AdManagementPage from './page-staff/ad-management';
@@ -16,6 +18,9 @@ import IntroducePage from './page-company/IntroducePage';
 import AddLocationPage from './page-company/AddLocationPage';
 import AddAdPage from './page-company/AddAdPage';
 import PaymentResultPage from './page-company/PaymentResultPage';
+import CompanyDashboard from './page-company/CompanyDashboard';
+import CompanyLocationManagement from './page-company/CompanyLocationManagement';
+import CompanyAdManagement from './page-company/CompanyAdManagement';
 
 // --- Import các trang xác thực, Onboarding, và trang User ---
 import AuthPage from './page-auth/AuthPage';
@@ -23,6 +28,12 @@ import UnauthorizedPage from './page-auth/UnauthorizedPage';
 import Onboarding from './components/Onboarding';
 import UserDashboard from './page-user/UserDashboard';
 import ProfilePage from './page-user/ProfilePage';
+
+// --- Import các trang của Admin (MỚI) ---
+import AdminLayout from './layouts/AdminLayout';
+import AdminDashboard from './page-admin/AdminDashboard';
+import StaffManagementPage from './page-admin/StaffManagement';
+
 
 // --- Import API services ---
 import { login, getCurrentUser } from './services/api';
@@ -84,13 +95,11 @@ function App() {
     try {
       const response = await login(username, password);
       
-      // <<< SỬA LỖI QUAN TRỌNG TẠI ĐÂY >>>
-      // Tạo object newUser chứa đầy đủ thông tin từ backend
       const newUser = {
         token: response.token,
         role: response.role,
-        userId: response.userId,     // Lấy userId
-        username: response.username, // Lấy username
+        userId: response.userId,
+        username: response.username,
       };
 
       if (!newUser.role || newUser.userId === undefined) {
@@ -98,7 +107,6 @@ function App() {
         return;
       }
 
-      // Lưu object mới và đầy đủ vào localStorage
       localStorage.setItem("user", JSON.stringify(newUser));
       setUser(newUser);
       setIsLoadingProfile(true);
@@ -127,31 +135,56 @@ function App() {
 
         <Route path="/" element={
             !user ? <Navigate to="/login" /> :
-            (user.role === 'STAFF' || user.role === 'ADMIN') ? <Navigate to="/staff/dashboard" /> :
-            user.role === 'COMPANY' ? <Navigate to="/introduce" /> :
+            user.role === 'ADMIN' ? <Navigate to="/admin/dashboard" /> :
+            user.role === 'STAFF' ? <Navigate to="/staff/dashboard" /> :
+            user.role === 'COMPANY' ? <Navigate to="/company/dashboard" /> :
             user.role === 'USER' ? <Navigate to="/user/dashboard" /> :
             <Navigate to="/unauthorized" />
         } />
 
+        {/* --- Admin Routes (MỚI) --- */}
+        <Route path="/admin/*" element={
+            user && user.role === 'ADMIN'
+            ? <AdminLayout user={user} onLogout={handleLogout} />
+            : <Navigate to={user ? "/unauthorized" : "/login"} />
+        }>
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="staff" element={<StaffManagementPage />} />
+        </Route>
+
+        {/* --- Staff Routes --- */}
         <Route path="/staff/*" element={
-            user && (user.role === 'STAFF' || user.role === 'ADMIN')
-            ? <StaffLayout onLogout={handleLogout} />
+            user && user.role === 'STAFF'
+            ? <StaffLayout user={user} onLogout={handleLogout} />
             : <Navigate to={user ? "/unauthorized" : "/login"} />
         }>
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="accounts" element={<AccountManagementPage />} />
             <Route path="accounts/:accountId" element={<AccountDetailPage />} />
             <Route path="locations" element={<LocationManagementPage />} />
+            <Route path="add-location" element={<AddLocationPageStaff />} />
             <Route path="locations/:locationId" element={<LocationDetailPage />} />
             <Route path="reviews" element={<ReviewManagementPage />} />
             <Route path="ads" element={<AdManagementPage />} />
             <Route path="contacts" element={<ContactManagementPage />} />
         </Route>
 
-        <Route path="/company/add-location" element={user && user.role === 'COMPANY' ? <AddLocationPage /> : <Navigate to={user ? "/unauthorized" : "/login"} />} />
-        <Route path="/company/add-ad" element={user && user.role === 'COMPANY' ? <AddAdPage /> : <Navigate to={user ? "/unauthorized" : "/login"} />} />
-        <Route path="/payment-return" element={user && user.role === 'COMPANY' ? <PaymentResultPage /> : <Navigate to={user ? "/unauthorized" : "/login"} />} />
+        {/* --- Company Routes --- */}
+        <Route path="/company/*" element={
+            user && user.role === 'COMPANY'
+            ? <CompanyLayout user={user} onLogout={handleLogout} />
+            : <Navigate to={user ? "/unauthorized" : "/login"} />
+        }>
+            <Route path="dashboard" element={<CompanyDashboard />} />
+            <Route path="locations" element={<CompanyLocationManagement />} />
+            <Route path="ads" element={<CompanyAdManagement />} />
+            <Route path="add-location" element={<AddLocationPage />} />
+            <Route path="add-ad" element={<AddAdPage />} />
+        </Route>
+        
+        <Route path="/payment-return" element={<PaymentResultPage />} />
 
+        {/* --- User Routes --- */}
         <Route path="/user/dashboard" element={user && user.role === 'USER' ? <UserDashboard onLogout={handleLogout} /> : <Navigate to={user ? "/unauthorized" : "/login"} />} />
         <Route path="/profile" element={user && user.role === 'USER' ? <ProfilePage /> : <Navigate to={user ? "/unauthorized" : "/login"} />} />
 

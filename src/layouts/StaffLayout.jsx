@@ -63,7 +63,8 @@ const getPageTitle = (pathname) => {
 };
 
 // --- Component chính ---
-export default function StaffLayout({ onLogout }) {
+// **BẮT ĐẦU SỬA LỖI** - Nhận prop `user`
+export default function StaffLayout({ user, onLogout }) { 
     const [counts, setCounts] = useState({ accounts: 0, locations: 0, reviews: 0, ads: 0, contacts: 0 });
     const [loading, setLoading] = useState(true);
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
@@ -168,6 +169,9 @@ export default function StaffLayout({ onLogout }) {
     return (
         <div className="staff-layout">
             <Sidebar
+                // **BẮT ĐẦU SỬA LỖI** - Truyền userRole vào Sidebar
+                userRole={user?.role}
+                // **KẾT THÚC SỬA LỖI**
                 counts={counts}
                 hasNewContacts={hasNewContacts}
                 onViewContacts={handleViewContacts}
@@ -195,8 +199,8 @@ export default function StaffLayout({ onLogout }) {
                                 />
                              )}
                          </div>
-                         <span className="user-greeting">Xin chào, Nhân viên A!</span>
-                         <img src="https://placehold.co/40x40/3b82f6/ffffff?text=NV" alt="User Avatar" className="user-avatar" />
+                         <span className="user-greeting">Xin chào, {user?.username || 'Nhân viên'}!</span>
+                         <img src={"/images/image.png"} alt="User Avatar" className="user-avatar" />
                      </div>
                 </header>
 

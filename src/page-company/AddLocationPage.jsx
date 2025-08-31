@@ -57,9 +57,8 @@ export default function AddLocationPage() {
         categoryIds: [],
     });
     
-    // THAY ĐỔI 1: Đổi tên state để dễ hiểu hơn
-    const [files, setFiles] = useState([]); // Trước đây là `images`
-    const [filePreviews, setFilePreviews] = useState([]); // Trước đây là `imagePreviews`
+    const [files, setFiles] = useState([]);
+    const [filePreviews, setFilePreviews] = useState([]);
 
     const [categories, setCategories] = useState([]);
     const [position, setPosition] = useState({ lat: 21.028511, lng: 105.804817 }); // Hà Nội
@@ -69,6 +68,13 @@ export default function AddLocationPage() {
     const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
     const [categorySearchTerm, setCategorySearchTerm] = useState('');
     const categoryDropdownRef = useRef(null);
+
+    // **BẮT ĐẦU SỬA LỖI**: Lấy thông tin người dùng từ localStorage
+    const [user, setUser] = useState(() => {
+        const savedUser = localStorage.getItem("user");
+        return savedUser ? JSON.parse(savedUser) : null;
+    });
+    // **KẾT THÚC SỬA LỖI**
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -132,13 +138,11 @@ export default function AddLocationPage() {
         });
     };
 
-    // THAY ĐỔI 2: Cập nhật hàm xử lý tệp
     const handleFileChange = (e) => {
         if (e.target.files) {
             const filesArray = Array.from(e.target.files);
             setFiles(prev => [...prev, ...filesArray]);
             
-            // Lưu cả URL và loại tệp
             const newPreviews = filesArray.map(file => ({
                 url: URL.createObjectURL(file),
                 type: file.type
@@ -147,7 +151,6 @@ export default function AddLocationPage() {
         }
     };
     
-    // THAY ĐỔI 3: Cập nhật hàm xóa tệp
     const removeFile = (index) => {
         setFiles(prev => prev.filter((_, i) => i !== index));
         setFilePreviews(prev => prev.filter((_, i) => i !== index));
@@ -162,13 +165,18 @@ export default function AddLocationPage() {
         setLoading(true);
         setError(null);
         try {
-            const dataToSubmit = { ...formData, createdBy: 1 };
-            // THAY ĐỔI 4: Gửi `files` thay vì `images`
+            // **BẮT ĐẦU SỬA LỖI**: Sử dụng userId từ state thay vì gán cứng
+            if (!user || !user.userId) {
+                throw new Error("Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại.");
+            }
+            const dataToSubmit = { ...formData, createdBy: user.userId };
+            // **KẾT THÚC SỬA LỖI**
+
             await createLocationWithImages(dataToSubmit, files); 
             alert("Thêm địa điểm thành công! Địa điểm của bạn sẽ được kiểm duyệt.");
-            navigate('/company/dashboard');
+            navigate('/company/locations'); // Chuyển hướng về trang quản lý địa điểm
         } catch (err) {
-            const errorMessage = err.response?.data?.message || "Đã xảy ra lỗi khi thêm địa điểm.";
+            const errorMessage = err.response?.data?.message || err.message || "Đã xảy ra lỗi khi thêm địa điểm.";
             setError(errorMessage);
         } finally {
             setLoading(false);
@@ -192,7 +200,6 @@ export default function AddLocationPage() {
                     <div className="form-column">
                         <div className="form-card">
                             <h3 className="card-title">Thông tin cơ bản</h3>
-                            {/* ... các form group khác giữ nguyên ... */}
                             <div className="form-group">
                                 <label htmlFor="name">Tên địa điểm</label>
                                 <input type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} required />
@@ -306,7 +313,6 @@ export default function AddLocationPage() {
                                 <input id="file-upload" type="file" multiple accept="image/*,video/*" onChange={handleFileChange} style={{ display: 'none' }}/>
                             </div>
                             <div className="image-preview-grid">
-                                {/* THAY ĐỔI 5: Logic render điều kiện */}
                                 {filePreviews.map((preview, index) => (
                                     <div key={index} className="image-preview-item">
                                         {preview.type.startsWith('image/') ? (

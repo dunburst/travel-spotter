@@ -20,19 +20,23 @@ export default function AddAdPage() {
     // --- State cho form và UI ---
     const [formData, setFormData] = useState({
         title: '', description: '', locationId: '', categoryIds: [],
-        actions: [], createdById: 1,
+        actions: [],
+        // ĐÃ XÓA: createdById giờ sẽ được xử lý động
     });
     const [selectedPackageId, setSelectedPackageId] = useState(adPackages.find(p => p.popular).id);
     const [companyLocations, setCompanyLocations] = useState([]);
     const [allCategories, setAllCategories] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-
-    // **BẮT ĐẦU THAY ĐỔI**
     const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
     const [categorySearchTerm, setCategorySearchTerm] = useState('');
     const categoryDropdownRef = useRef(null);
-    // **KẾT THÚC THAY ĐỔI**
+
+    // **SỬA LỖI**: Lấy thông tin người dùng từ localStorage
+    const [user, setUser] = useState(() => {
+        const savedUser = localStorage.getItem("user");
+        return savedUser ? JSON.parse(savedUser) : null;
+    });
 
     // --- Lấy dữ liệu cho form ---
     useEffect(() => {
@@ -57,7 +61,6 @@ export default function AddAdPage() {
         fetchDataForForm();
     }, []);
 
-    // **BẮT ĐẦU THAY ĐỔI: Thêm useEffect để xử lý click bên ngoài dropdown**
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (categoryDropdownRef.current && !categoryDropdownRef.current.contains(event.target)) {
@@ -67,7 +70,6 @@ export default function AddAdPage() {
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
-    // **KẾT THÚC THAY ĐỔI**
 
     // --- Các hàm xử lý sự kiện ---
     const handleInputChange = (e) => {
@@ -106,6 +108,12 @@ export default function AddAdPage() {
             setError("Vui lòng chọn một địa điểm để quảng cáo.");
             return;
         }
+        // **SỬA LỖI**: Kiểm tra người dùng tồn tại trước khi gửi
+        if (!user || !user.userId) {
+            setError("Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại.");
+            return;
+        }
+
         setLoading(true);
         setError(null);
         
@@ -121,6 +129,8 @@ export default function AddAdPage() {
                 startDate: startDate.toISOString(),
                 endDate: endDate.toISOString(),
                 budget: selectedPkg.price,
+                // **SỬA LỖI**: Sử dụng userId động
+                createdById: user.userId,
             };
 
             const adResponse = await createAd(adData);
@@ -204,7 +214,6 @@ export default function AddAdPage() {
                                     <label><input type="checkbox" name="actions" value="SHARE" onChange={handleActionChange} checked={formData.actions.includes('SHARE')} disabled={formData.actions.length >= 2 && !formData.actions.includes('SHARE')} /> Chia sẻ</label>
                                 </div>
                              </div>
-                            {/* **BẮT ĐẦU THAY ĐỔI: Giao diện chọn từ khóa mới** */}
                             <div className="form-group">
                                 <label>Chọn từ khóa tìm kiếm</label>
                                 <div className="multi-select-container" ref={categoryDropdownRef}>
@@ -254,7 +263,6 @@ export default function AddAdPage() {
                                 </div>
                                 <small>Nhấp vào ô trên để chọn từ khóa.</small>
                             </div>
-                            {/* **KẾT THÚC THAY ĐỔI** */}
                         </div>
                     </div>
 

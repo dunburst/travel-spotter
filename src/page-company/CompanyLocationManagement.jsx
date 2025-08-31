@@ -1,0 +1,96 @@
+// src/page-company/CompanyLocationManagement.jsx
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getCompanyLocations, deleteLocation } from '../services/api';
+import '../page-staff/account-management.css'; // Sửa đường dẫn CSS
+
+const StatusBadge = ({ status }) => {
+    const statusInfo = {
+        PENDING: { text: 'Chờ duyệt', className: 'status-badge status-pending' },
+        ACTIVE: { text: 'Đang hoạt động', className: 'status-badge status-active' },
+        INACTIVE: { text: 'Đã từ chối', className: 'status-badge status-inactive' },
+    }[status] || { text: status, className: 'status-badge status-default' };
+    return <span className={statusInfo.className}>{statusInfo.text}</span>;
+};
+
+const CompanyLocationManagement = () => {
+    const [locations, setLocations] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+    const fetchData = useCallback(async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const locationsRes = await getCompanyLocations();
+            setLocations(locationsRes.data);
+        } catch (err) {
+            setError(err.message || "Đã xảy ra lỗi không xác định.");
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
+    const handleDeleteLocation = async (locationId) => {
+        if (window.confirm("Bạn có chắc chắn muốn xóa địa điểm này không? Hành động này không thể hoàn tác.")) {
+            try {
+                await deleteLocation(locationId);
+                fetchData();
+            } catch (err) {
+                alert(`Lỗi khi xóa địa điểm: ${err.message}`);
+            }
+        }
+    };
+    
+    if (loading) return <div className="loading-state">Đang tải dữ liệu...</div>;
+    if (error) return <div className="error-state">Lỗi: {error}</div>;
+
+    return (
+        <div className="content-wrapper">
+            <div className="card">
+                <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                        <h2 className="card-title">Địa điểm của bạn</h2>
+                        <p className="card-description">Thêm, sửa và quản lý các địa điểm thuộc doanh nghiệp của bạn.</p>
+                    </div>
+                    <button onClick={() => navigate('/company/add-location')} className="action-button approve-button">Thêm địa điểm mới</button>
+                </div>
+                <div className="table-responsive">
+                    <table className="data-table">
+                        <thead>
+                            <tr className="table-header">
+                                <th className="table-th">Tên địa điểm</th>
+                                <th className="table-th">Địa chỉ</th>
+                                <th className="table-th">Trạng thái</th>
+                                <th className="table-th text-center">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody className="table-body">
+                            {locations.length > 0 ? locations.map(loc => (
+                                <tr key={loc.locationId} className="table-row">
+                                    <td className="table-td font-medium">{loc.name}</td>
+                                    <td className="table-td">{loc.location}</td>
+                                    <td className="table-td"><StatusBadge status={loc.status} /></td>
+                                    <td className="table-td text-center">
+                                        <button onClick={() => handleDeleteLocation(loc.locationId)} className="action-button reject-button">Xóa</button>
+                                    </td>
+                                </tr>
+                            )) : (
+                                <tr>
+                                    <td colSpan="4" className="empty-state">Bạn chưa tạo địa điểm nào.</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default CompanyLocationManagement;

@@ -290,3 +290,94 @@
   from { opacity: 0; }
   to { opacity: 1; }
 }
+/* ... (GIỮ NGUYÊN TOÀN BỘ CSS CŨ CỦA BẠN) ... */
+
+/* --- BẮT ĐẦU THÊM CSS MỚI CHO PHẦN ĐÁNH GIÁ --- */
+.review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.review-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.review-item:not(:last-child) {
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #f3f4f6; /* gray-100 */
+}
+
+.review-item__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #dbeafe; /* blue-100 */
+    color: #1e40af; /* blue-800 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+
+.review-item__content {
+    flex-grow: 1;
+}
+
+.review-item__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
+
+.review-item__author {
+    font-weight: 600;
+    color: #1f2937; /* gray-800 */
+}
+
+.review-item__timestamp {
+    font-size: 0.875rem;
+    color: #9ca3af; /* gray-400 */
+}
+
+.review-item__rating {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 0.5rem;
+    color: #f59e0b; /* yellow-500 */
+}
+
+.review-item__comment {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #4b5563; /* gray-600 */
+    margin: 0;
+}
+
+.review-item__images {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 0.75rem;
+}
+
+.review-item__image-thumbnail {
+    width: 72px;
+    height: 72px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid #e5e7eb;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.review-item__image-thumbnail:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+/* --- KẾT THÚC THÊM CSS MỚI --- */

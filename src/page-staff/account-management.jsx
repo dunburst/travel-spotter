@@ -1,22 +1,19 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom'; // <-- THÊM IMPORT NÀY
+import { Link } from 'react-router-dom';
 
-// Cập nhật danh sách import
+// Cập nhật danh sách import: đã bỏ updateAccountStatus
 import { 
     getAllAccounts, 
     getPendingCompanyAccounts, 
-    updateAccountStatus,
     approveCompanyAccount,
     rejectCompanyAccount,
 } from '../services/api';
 
 import './account-management.css'; 
 
-// --- Icon Components (Không thay đổi) ---
+// --- Icon Components (Đã xóa LockClosedIcon và LockOpenIcon) ---
 const CheckCircleIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>);
 const XCircleIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>);
-const LockClosedIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>);
-const LockOpenIcon = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" /></svg>);
 
 // --- Helper Functions (Không thay đổi) ---
 const formatDate = (dateString) => { if (!dateString) return 'N/A'; const date = new Date(dateString); return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }); };
@@ -53,7 +50,8 @@ export default function AccountManagementPage() {
 
     const handleApproveAccount = async (accountId) => { if (!window.confirm("Bạn có chắc muốn duyệt tài khoản này?")) return; try { await approveCompanyAccount(accountId); await fetchData(); } catch (err) { alert("Lỗi khi duyệt tài khoản: " + (err.response?.data?.message || err.message)); } };
     const handleRejectAccount = async (accountId) => { if (!window.confirm("Bạn có chắc muốn từ chối tài khoản này?")) return; try { await rejectCompanyAccount(accountId); await fetchData(); } catch (err) { alert("Lỗi khi từ chối tài khoản: " + (err.response?.data?.message || err.message)); } };
-    const handleUpdateStatus = async (accountId, newStatus) => { try { await updateAccountStatus(accountId, newStatus); await fetchData(); } catch (err) { const errorMessage = err.response?.data?.message || err.message || "Lỗi khi cập nhật trạng thái."; setError(errorMessage); } };
+    
+    // --- ĐÃ XÓA HÀM handleUpdateStatus ---
 
     if (loading) { return <div className="loading-state">Đang tải dữ liệu...</div>; }
     if (error) { return <div className="error-state">Lỗi: {error}</div>; }
@@ -80,7 +78,6 @@ export default function AccountManagementPage() {
                                 pendingAccounts.map((account) => (
                                     <tr key={account.accountId} className="table-row">
                                         <td className="table-td">
-                                            {/* THAY ĐỔI Ở ĐÂY */}
                                             <Link to={`/staff/accounts/${account.accountId}`} className="text-link">
                                                 {account.username}
                                             </Link>
@@ -115,7 +112,7 @@ export default function AccountManagementPage() {
                                 <th scope="col" className="table-th">Tên tài khoản</th>
                                 <th scope="col" className="table-th">Loại</th>
                                 <th scope="col" className="table-th">Trạng thái</th>
-                                <th scope="col" className="table-th text-center">Hành động</th>
+                                
                             </tr>
                         </thead>
                         <tbody className="table-body">
@@ -128,8 +125,8 @@ export default function AccountManagementPage() {
                                     <td className="table-td text-gray-600">{ROLE_MAP[account.role] || account.role}</td>
                                     <td className="table-td"><StatusBadge status={account.status} /></td>
                                     <td className="table-td text-center">
-                                        {account.status === 'ACTIVE' && account.role !== 'ADMIN' && (<button onClick={() => handleUpdateStatus(account.accountId, 'BANNED')} className="action-button ban-button"><LockClosedIcon className="button-icon" /> Khóa</button>)}
-                                        {account.status === 'BANNED' && (<button onClick={() => handleUpdateStatus(account.accountId, 'ACTIVE')} className="action-button unban-button"><LockOpenIcon className="button-icon" /> Mở khóa</button>)}
+                                        {/* --- KHU VỰC NÀY ĐÃ BỊ XÓA --- */}
+                                        {/* Không còn nút nào ở đây */}
                                     </td>
                                 </tr>
                             ))}
