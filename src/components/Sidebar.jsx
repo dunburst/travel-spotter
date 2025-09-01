@@ -45,11 +45,11 @@ const Sidebar = ({ userRole, counts = {}, hasNewContacts, onViewContacts, onLogo
                 <span>Kiểm duyệt Đánh giá</span>
                 {counts.reviews > 0 && <span className="badge">{counts.reviews}</span>}
             </NavLink>
-            <NavLink to="/staff/ads" className="sidebar-link">
+            {/* <NavLink to="/staff/ads" className="sidebar-link">
                 <FaAd className="sidebar-icon" />
                 <span>Kiểm duyệt Quảng cáo</span>
                 {counts.ads > 0 && <span className="badge">{counts.ads}</span>}
-            </NavLink>
+            </NavLink> */}
             <NavLink to="/staff/contacts" className="sidebar-link" onClick={onViewContacts}>
                 <FaAddressBook className="sidebar-icon" />
                 <span>Hòm thư liên hệ</span>

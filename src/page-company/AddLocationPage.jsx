@@ -156,32 +156,38 @@ export default function AddLocationPage() {
         setFilePreviews(prev => prev.filter((_, i) => i !== index));
     };
     
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (formData.categoryIds.length === 0) {
-            setError("Vui lòng chọn ít nhất một danh mục.");
-            return;
-        }
-        setLoading(true);
-        setError(null);
-        try {
-            // **BẮT ĐẦU SỬA LỖI**: Sử dụng userId từ state thay vì gán cứng
-            if (!user || !user.userId) {
-                throw new Error("Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại.");
-            }
-            const dataToSubmit = { ...formData, createdBy: user.userId };
-            // **KẾT THÚC SỬA LỖI**
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (formData.categoryIds.length === 0) {
+            setError("Vui lòng chọn ít nhất một danh mục.");
+            return;
+        }
+        setLoading(true);
+        setError(null);
+        try {
+            // Kiểm tra thông tin người dùng
+            if (!user || !user.userId) {
+                throw new Error("Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại.");
+            }
 
-            await createLocationWithImages(dataToSubmit, files); 
-            alert("Thêm địa điểm thành công! Địa điểm của bạn sẽ được kiểm duyệt.");
-            navigate('/company/locations'); // Chuyển hướng về trang quản lý địa điểm
-        } catch (err) {
-            const errorMessage = err.response?.data?.message || err.message || "Đã xảy ra lỗi khi thêm địa điểm.";
-            setError(errorMessage);
-        } finally {
-            setLoading(false);
-        }
-    };
+            // Tạo đối tượng dữ liệu để gửi đi, bao gồm cả tọa độ từ bản đồ
+            const dataToSubmit = { 
+                ...formData, 
+                latitude: position.lat,
+                longitude: position.lng,
+                createdBy: user.userId 
+            };
+
+            await createLocationWithImages(dataToSubmit, files); 
+            alert("Thêm địa điểm thành công! Địa điểm của bạn sẽ được kiểm duyệt.");
+            navigate('/company/locations'); // Chuyển hướng về trang quản lý địa điểm
+        } catch (err) {
+            const errorMessage = err.response?.data?.message || err.message || "Đã xảy ra lỗi khi thêm địa điểm.";
+            setError(errorMessage);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const filteredCategories = categories.filter(cat =>
         cat.name.toLowerCase().includes(categorySearchTerm.toLowerCase())

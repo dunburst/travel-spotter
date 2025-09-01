@@ -1,6 +1,6 @@
 // src/page-company/CompanyLocationManagement.jsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getCompanyLocations, deleteLocation } from '../services/api';
 import '../page-staff/account-management.css'; // Sửa đường dẫn CSS
 
@@ -73,7 +73,11 @@ const CompanyLocationManagement = () => {
                         <tbody className="table-body">
                             {locations.length > 0 ? locations.map(loc => (
                                 <tr key={loc.locationId} className="table-row">
-                                    <td className="table-td font-medium">{loc.name}</td>
+                                    <td className="table-td font-medium">
+                                        <Link to={`/company/locations/${loc.locationId}`} className="text-link">
+                                            {loc.name}
+                                        </Link>
+                                    </td>
                                     <td className="table-td">{loc.location}</td>
                                     <td className="table-td"><StatusBadge status={loc.status} /></td>
                                     <td className="table-td text-center">

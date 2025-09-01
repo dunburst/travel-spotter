@@ -34,6 +34,7 @@ export const login = async (username, password) => {
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || "Đăng nhập thất bại");
+  localStorage.setItem("user", JSON.stringify(data)); // Lưu thông tin user vào localStorage
   return data;
 };
 
@@ -48,13 +49,59 @@ export const registerCompany = (companyData) => {
 
 // --- API LIÊN QUAN ĐẾN USER PROFILE ---
 export const updateUserProfile = (userId, profileData) => {
+    // API này giờ chỉ cập nhật thông tin text
     return api.put(`/accounts/user/${userId}`, profileData);
 };
+
+// **BẮT ĐẦU THAY ĐỔI**
+// Thêm hàm chuyên dụng để cập nhật avatar
+export const updateAvatar = (userId, file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return api.put(`/accounts/${userId}/avatar`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    });
+};
+// **KẾT THÚC THAY ĐỔI**
 
 export const getCurrentUser = async () => {
     const response = await api.get('/accounts/me/user');
     return response.data;
 };
+
+// --- API LIÊN QUAN ĐẾN LOCATION & REVIEWS (BỔ SUNG) ---
+export const searchLocations = (query) => api.get(`/locations?q=${encodeURIComponent(query)}`);
+export const getLocationById = (locationId) => api.get(`/locations/${locationId}`);
+export const getReviewsByLocation = (locationId) => api.get(`/reviews?locationId=${locationId}`);
+export const getAverageRating = (locationId) => api.get(`/reviews/average/${locationId}`);
+export const getCategories = () => api.get('/categories');
+export const writeReview = ({ locationId, rating, comment }) => {
+    const formData = new FormData();
+    formData.append('locationId', locationId);
+    formData.append('rating', rating);
+    formData.append('comment', comment);
+    return api.post('/reviews', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    });
+};
+export const submitReview = writeReview;
+
+export const uploadImage = async (file) => {
+    const formData = new FormData();
+    formData.append("image", file);
+    const response = await api.post("/upload/image", formData, {
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    });
+    return response.data.url;
+};
+
+
+// --- API LIÊN QUAN ĐẾN FAVORITES & ADS (BỔ SUNG) ---
+export const getFavorites = () => api.get('/favorites/me');
+export const toggleFavorite = (locationId) => api.post(`/favorites/toggle/${locationId}`);
+export const getAds = () => api.get('/ads');
 
 
 // --- CÁC HÀM API KHÁC ---
@@ -110,7 +157,7 @@ export const createLocationWithImages = (locationData, images) => {
 
 export const createLocationByStaff = (locationData, images) => {
     const formData = new FormData();
-    formData.append('data', JSON.stringify(locationData)); 
+    formData.append('data', JSON.stringify(locationData));
     images.forEach((image) => {
         formData.append('image', image);
     });

@@ -17,6 +17,7 @@ import ContactManagementPage from './page-staff/ContactManagement';
 import IntroducePage from './page-company/IntroducePage';
 import AddLocationPage from './page-company/AddLocationPage';
 import AddAdPage from './page-company/AddAdPage';
+import CompanyLocationDetailPage from './page-company/CompanyLocationDetailPage';
 import PaymentResultPage from './page-company/PaymentResultPage';
 import CompanyDashboard from './page-company/CompanyDashboard';
 import CompanyLocationManagement from './page-company/CompanyLocationManagement';
@@ -27,7 +28,11 @@ import AuthPage from './page-auth/AuthPage';
 import UnauthorizedPage from './page-auth/UnauthorizedPage';
 import Onboarding from './components/Onboarding';
 import UserDashboard from './page-user/UserDashboard';
-import ProfilePage from './page-user/ProfilePage';
+// --- THAY ĐỔI: Import các component mới của trang User ---
+import Profile from './page-user/UseComponent/Profile';
+import LocationDetailPageUser from './page-user/UseComponent/LocationDetailPageUser';
+import SupportPage from './page-user/UseComponent/SupportPage';
+
 
 // --- Import các trang của Admin (MỚI) ---
 import AdminLayout from './layouts/AdminLayout';
@@ -177,6 +182,7 @@ function App() {
         }>
             <Route path="dashboard" element={<CompanyDashboard />} />
             <Route path="locations" element={<CompanyLocationManagement />} />
+            <Route path="locations/:locationId" element={<CompanyLocationDetailPage />} />
             <Route path="ads" element={<CompanyAdManagement />} />
             <Route path="add-location" element={<AddLocationPage />} />
             <Route path="add-ad" element={<AddAdPage />} />
@@ -184,9 +190,12 @@ function App() {
         
         <Route path="/payment-return" element={<PaymentResultPage />} />
 
-        {/* --- User Routes --- */}
+        {/* --- User Routes (ĐÃ CẬP NHẬT) --- */}
         <Route path="/user/dashboard" element={user && user.role === 'USER' ? <UserDashboard onLogout={handleLogout} /> : <Navigate to={user ? "/unauthorized" : "/login"} />} />
-        <Route path="/profile" element={user && user.role === 'USER' ? <ProfilePage /> : <Navigate to={user ? "/unauthorized" : "/login"} />} />
+        <Route path="/profile" element={user && user.role === 'USER' ? <Profile/> : <Navigate to={user ? "/unauthorized" : "/login"} />} />
+        <Route path="/location/:locationId/:locationSlug" element={<LocationDetailPageUser />} />
+        <Route path="/support" element={user && user.role === 'USER' ? <SupportPage /> : <Navigate to={user ? "/unauthorized" : "/login"} />} />
+
 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
